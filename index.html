@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>חמשת החושים - מסע לימודי</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>
+      // Tailwind CSS configuration
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Assistant', 'sans-serif'],
+            },
+            animation: {
+              'pulse-subtle': 'pulse-subtle 3s ease-in-out infinite',
+              'bounce-horizontal': 'bounce-horizontal 1.5s ease-in-out infinite',
+              'icon-pop': 'icon-pop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both',
+              'text-reveal': 'text-reveal 1s ease-out both',
+              'bg-shift': 'bg-shift 10s ease infinite',
+              'fade-in': 'fadeIn 0.3s ease-out forwards',
+              'zoom-in': 'zoomIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'slide-up': 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'slide-in-right': 'slideInRight 0.6s cubic-bezier(0.4, 0, 0.2, 1) both',
+              'slide-in-left': 'slideInLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1) both',
+            },
+            keyframes: {
+              fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+              zoomIn: { '0%': { transform: 'scale(0.95)', opacity: '0' }, '100%': { transform: 'scale(1)', opacity: '1' } },
+              slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+              'pulse-subtle': {
+                '0%, 100%': { opacity: 0.1, transform: 'scale(1)' },
+                '50%': { opacity: 0.3, transform: 'scale(1.1)' },
+              },
+              'bounce-horizontal': {
+                '0%, 100%': { transform: 'translateX(-10px)' },
+                '50%': { transform: 'translateX(10px)' },
+              },
+              'icon-pop': {
+                '0%': { transform: 'scale(0) rotate(-45deg)', opacity: '0' },
+                '100%': { transform: 'scale(1) rotate(0)', opacity: '1' },
+              },
+              'text-reveal': {
+                '0%': { transform: 'translateY(20px)', opacity: '0' },
+                '100%': { transform: 'translateY(0)', opacity: '1' },
+              },
+              'bg-shift': {
+                '0%, 100%': { 'background-position': '0% 50%' },
+                '50%': { 'background-position': '100% 50%' },
+              },
+              'slideInRight': {
+                '0%': { transform: 'translateX(50%) scale(0.95)', opacity: '0', filter: 'blur(4px)' },
+                '100%': { transform: 'translateX(0) scale(1)', opacity: '1', filter: 'blur(0)' },
+              },
+              'slideInLeft': {
+                '0%': { transform: 'translateX(-50%) scale(0.95)', opacity: '0', filter: 'blur(4px)' },
+                '100%': { transform: 'translateX(0) scale(1)', opacity: '1', filter: 'blur(0)' },
+              }
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      body {
+        font-family: 'Assistant', sans-serif;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      .active-scale:active { transform: scale(0.97); filter: brightness(0.9); }
+      .bg-animated-gradient {
+        background: linear-gradient(-45deg, #1e3a8a, #3730a3, #4338ca, #1e40af);
+        background-size: 400% 400%;
+      }
+      .nav-next { animation: slideInLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1) both; }
+      .nav-prev { animation: slideInRight 0.6s cubic-bezier(0.4, 0, 0.2, 1) both; }
+      .snap-inline { scroll-snap-type: inline mandatory; -webkit-overflow-scrolling: touch; }
+      .snap-inline > * { scroll-snap-align: center; }
+      
+      /* Paper effect for preview */
+      .paper-shadow {
+        box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.2), 0 5px 15px -5px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4"
+  }
+}
+</script>
+</head>
+  <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white overflow-x-hidden">
+    <div id="root"></div>
+  </body>
+</html>
