@@ -23,23 +23,79 @@ const Printables: React.FC = () => {
         <head>
           <title>${title}</title>
           <style>
-            body { margin: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Assistant', sans-serif; text-align: center; padding: 40px; background: #f9fafb; }
-            .paper { background: white; padding: 30px; border: 1px solid #ddd; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 800px; width: 100%; }
-            img { max-width: 100%; height: auto; border: 1px solid #eee; margin-bottom: 20px; }
-            h1 { margin-top: 0; color: #1e1b4b; font-size: 24px; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; margin-bottom: 20px; }
-            .footer { font-size: 12px; color: #9ca3af; margin-top: 20px; }
+            @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&display=swap');
+            body { 
+              margin: 0; 
+              display: flex; 
+              flex-direction: column; 
+              align-items: center; 
+              min-height: 100vh; 
+              font-family: 'Assistant', sans-serif; 
+              text-align: center; 
+              background: white; 
+            }
+            .page {
+              width: 210mm;
+              min-height: 297mm;
+              padding: 20mm;
+              box-sizing: border-box;
+              display: flex;
+              flex-direction: column;
+              border: 1px solid #eee;
+              position: relative;
+            }
+            .header {
+              display: flex;
+              justify-content: space-between;
+              border-bottom: 2px solid #333;
+              padding-bottom: 10px;
+              margin-bottom: 30px;
+              font-size: 14px;
+            }
+            .title-area {
+              margin-bottom: 40px;
+            }
+            h1 { 
+              margin: 0; 
+              color: #000; 
+              font-size: 28px; 
+              font-weight: 700;
+            }
+            .main-image { 
+              max-width: 100%; 
+              max-height: 180mm;
+              height: auto; 
+              margin: auto;
+              display: block;
+            }
+            .footer { 
+              margin-top: auto;
+              font-size: 12px; 
+              color: #777; 
+              border-top: 1px solid #ddd;
+              padding-top: 10px;
+            }
             @media print {
-              body { background: white; padding: 0; }
-              .paper { border: none; box-shadow: none; max-width: none; padding: 0; }
+              body { background: white; }
+              .page { border: none; width: auto; height: auto; padding: 10mm; }
               .no-print { display: none; }
             }
           </style>
         </head>
         <body>
-          <div class="paper">
-            <h1>${title} - חמשת החושים</h1>
-            <img src="${imageUrl}" alt="${title}" />
-            <div class="footer">הודפס מאתר "חמשת החושים - מסע לימודי"</div>
+          <div class="page">
+            <div class="header">
+              <span>שם: _________________</span>
+              <span>תאריך: _________________</span>
+            </div>
+            <div class="title-area">
+              <h1>${title}</h1>
+              <p>לימוד חווייתי - חמשת החושים</p>
+            </div>
+            <img src="${imageUrl}" alt="${title}" class="main-image" />
+            <div class="footer">
+              נוצר עבור אתר "חמשת החושים" | © Noam Gold AI 2026
+            </div>
           </div>
           <script>
             window.onload = () => {
@@ -56,7 +112,7 @@ const Printables: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4">
       <div className="text-center mb-12">
         <h2 className="text-4xl font-black text-indigo-900 dark:text-indigo-300 mb-4">דפי עבודה וצביעה</h2>
-        <p className="text-xl text-gray-600 dark:text-gray-400">הקליקו על דף כדי לראות אותו בגדול ולהדפיס</p>
+        <p className="text-xl text-gray-600 dark:text-gray-400">דפי צביעה מקצועיים ואיורי קו המותאמים להדפסה ביתית</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -67,7 +123,7 @@ const Printables: React.FC = () => {
             className="group bg-white dark:bg-gray-800 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col hover:shadow-2xl hover:-translate-y-2 transition-all cursor-pointer" 
           >
             <div className="relative h-72 bg-gray-50 dark:bg-gray-900 overflow-hidden">
-              <img src={item.imageUrl} alt="" className="w-full h-full object-cover grayscale opacity-80 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-500" />
+              <img src={item.imageUrl} alt="" className="w-full h-full object-cover grayscale opacity-70 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-500" />
               <div className="absolute top-4 right-4 bg-indigo-600 text-white px-4 py-1.5 rounded-full text-xs font-black shadow-md uppercase">{item.type}</div>
               <div className="absolute inset-0 bg-indigo-900/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-300">
                 <div className="bg-white text-indigo-900 px-6 py-3 rounded-2xl font-black shadow-2xl flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform">
@@ -95,10 +151,13 @@ const Printables: React.FC = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="md:w-3/5 h-[45vh] md:h-auto relative bg-gray-200 dark:bg-gray-800 flex items-center justify-center p-6 md:p-12">
-               <div className="bg-white rounded shadow-2xl p-4 md:p-8 w-full h-full max-w-md relative border border-gray-100">
-                  <div className="absolute top-0 right-0 left-0 h-1 bg-indigo-600/10"></div>
+               <div className="bg-white rounded-lg shadow-2xl p-4 md:p-8 w-full h-full max-w-md relative border border-gray-100 flex flex-col">
+                  {/* Decorative Worksheet Header */}
+                  <div className="flex justify-between text-[10px] border-b pb-2 mb-4 text-gray-400">
+                    <span>שם: __________</span>
+                    <span>תאריך: __________</span>
+                  </div>
                   <img src={previewItem.imageUrl} alt={previewItem.title} className="w-full h-full object-contain" />
-                  <div className="absolute bottom-4 right-4 text-[10px] text-gray-300 font-mono">PRINTABLE_A4_PREVIEW</div>
                </div>
             </div>
 
@@ -106,7 +165,7 @@ const Printables: React.FC = () => {
                <div className="mb-10">
                   <span className="inline-block px-4 py-1.5 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-black mb-6 uppercase tracking-widest">{previewItem.type}</span>
                   <h2 className="text-4xl font-black text-gray-800 dark:text-white mb-6 leading-tight">{previewItem.title}</h2>
-                  <p className="text-xl text-gray-600 dark:text-gray-400 leading-relaxed font-medium">מוכנים להדפיס? הדף מעוצב ומוכן למדפסת שלכם.</p>
+                  <p className="text-xl text-gray-600 dark:text-gray-400 leading-relaxed font-medium">מוכנים להדפיס? דף העבודה כולל מקום לשם ותאריך, ומותאם בדיוק למדפסת שלכם.</p>
                </div>
                
                <div className="flex flex-col gap-4 mt-auto">

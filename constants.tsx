@@ -14,29 +14,29 @@ export const PRINTABLES: PrintableResource[] = [
     id: 'p1',
     title: 'צביעת חמשת החושים',
     type: 'דף צביעה',
-    imageUrl: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=400&h=600&q=80&grayscale=true',
-    description: 'דף צביעה חביב המציג את כל איברי החושים לצביעה חופשית.'
+    imageUrl: 'https://img.freepik.com/free-vector/hand-drawn-five-senses-concept_23-2149120150.jpg?t=st=1716123456~exp=1716127056~hmac=coloring_placeholder',
+    description: 'דף צביעה חווייתי הכולל איורים של העין, האוזן, האף, הלשון והיד. מושלם ללימוד זיהוי האיברים.'
   },
   {
     id: 'p2',
-    title: 'מבוך הראייה',
+    title: 'מבוך הראייה המאתגר',
     type: 'דף עבודה',
-    imageUrl: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=400&h=600&q=80&grayscale=true',
-    description: 'עזרו לעין למצוא את הדרך אל הפרפר הצבעוני במבוך המאתגר.'
+    imageUrl: 'https://img.freepik.com/free-vector/maze-game-template-for-kids_23-2150153372.jpg?t=st=1716123456~exp=1716127056~hmac=maze_placeholder',
+    description: 'עזרו לעין למצוא את הדרך אל הפרפר! תרגול קשר עין-יד וריכוז.'
   },
   {
     id: 'p3',
-    title: 'התאמת חפץ לחוש',
+    title: 'משימת התאמת חפצים',
     type: 'תרגול',
-    imageUrl: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?auto=format&fit=crop&w=400&h=600&q=80&grayscale=true',
-    description: 'מתחו קו בין החפץ לבין האיבר שבעזרתו אנחנו מרגישים אותו.'
+    imageUrl: 'https://img.freepik.com/free-vector/worksheet-matching-game-with-objects_23-2148861346.jpg?t=st=1716123456~exp=1716127056~hmac=matching_placeholder',
+    description: 'מתחו קו בין המאכלים, הצלילים והמרקמים לבין החוש המתאים להם ביותר.'
   },
   {
     id: 'p4',
-    title: 'ממלכת הטעמים',
+    title: 'ממלכת האוכל והטעם',
     type: 'דף צביעה',
-    imageUrl: 'https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=400&h=600&q=80&grayscale=true',
-    description: 'צבעו את המאכלים המתוקים והחמוצים בתוך הממלכה של הלשון.'
+    imageUrl: 'https://img.freepik.com/free-vector/collection-hand-drawn-food-elements_23-2148880467.jpg?t=st=1716123456~exp=1716127056~hmac=food_coloring',
+    description: 'דף צביעה של פירות, ירקות וממתקים. מיינו אותם לפי טעמם: מתוק, מלוח או חמוץ.'
   }
 ];
 
