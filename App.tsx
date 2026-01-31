@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { SENSES_DATA } from './constants.tsx';
-import { SenseData } from './types';
+import { SenseData, FontSize } from './types';
 import SenseCard from './components/SenseCard';
 import SenseDetail from './components/SenseDetail';
 import Quiz from './components/Quiz';
@@ -19,52 +19,32 @@ const App: React.FC = () => {
   const [navDirection, setNavDirection] = useState<'next' | 'prev'>('next');
   const [showQuiz, setShowQuiz] = useState(false);
   const [showPrintables, setShowPrintables] = useState(false);
-  const [showBackToTop, setShowBackToTop] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('theme') === 'dark' || 
-             (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    }
-    return false;
-  });
+  const [isDarkMode, setIsDarkMode] = useState(true); // Default Dark
+  const [fontSize, setFontSize] = useState<FontSize>('m');
 
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const selectedSenseIndex = SENSES_DATA.findIndex(s => s.id === selectedSenseId);
   const selectedSense = SENSES_DATA[selectedSenseIndex];
 
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
+  // TTS Functionality
+  const speak = (text: string) => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'he-IL';
+      utterance.rate = 0.9;
+      window.speechSynthesis.speak(utterance);
     }
-  }, [isDarkMode]);
+  };
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [selectedSenseId, showQuiz, showPrintables]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowBackToTop(window.scrollY > 400);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    document.documentElement.className = isDarkMode ? 'dark' : '';
+    document.body.className = `${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'} font-size-${fontSize}`;
+  }, [isDarkMode, fontSize]);
 
   const handleIntroComplete = () => {
     setShowIntro(false);
     sessionStorage.setItem('introPlayed', 'true');
-  };
-
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      element.focus({ preventScroll: true });
-    }
+    speak("ברוכים הבאים למסע בחמשת החושים! בואו נתחיל ללמוד.");
   };
 
   const navigateSense = (direction: 'next' | 'prev') => {
@@ -73,61 +53,59 @@ const App: React.FC = () => {
     if (newIndex < 0) newIndex = SENSES_DATA.length - 1;
     if (newIndex >= SENSES_DATA.length) newIndex = 0;
     setSelectedSenseId(SENSES_DATA[newIndex].id);
-  };
-
-  const scrollGrid = (direction: 'left' | 'right') => {
-    if (scrollContainerRef.current) {
-      const scrollAmount = scrollContainerRef.current.offsetWidth * 0.8;
-      scrollContainerRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
-      });
-    }
+    speak(`חוש ה${SENSES_DATA[newIndex].name}`);
   };
 
   const resetView = () => {
     setSelectedSenseId(null);
     setShowQuiz(false);
     setShowPrintables(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
-
   return (
-    <div className={`min-h-screen flex flex-col transition-colors duration-300 ${isDarkMode ? 'dark bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
+    <div className="min-h-screen flex flex-col transition-all duration-300">
       {showIntro && <IntroSplash onComplete={handleIntroComplete} />}
       
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:right-4 bg-blue-600 text-white px-4 py-2 rounded-lg z-[100]">
-        דלג לתוכן המרכזי
-      </a>
+      <header className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100 dark:border-gray-700 px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4 shadow-sm">
+        <div className="flex items-center gap-4">
+          <button 
+            className="flex items-center gap-2 transition-transform hover:scale-105 active:scale-95" 
+            onClick={resetView}
+            onMouseEnter={() => speak("חזרה לדף הבית")}
+          >
+            <span className="text-3xl" aria-hidden="true">🧩</span>
+            <span className="text-2xl font-black text-gray-800 dark:text-white">חמשת החושים</span>
+          </button>
 
-      <header className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100 dark:border-gray-700 px-6 py-4 flex justify-between items-center" role="banner">
-        <button 
-          className="flex items-center gap-2 focus:ring-2 focus:ring-blue-500 rounded-lg p-1 transition-transform hover:scale-105 active:scale-95" 
-          onClick={resetView}
-          aria-label="חזרה לדף הבית"
-        >
-          <span className="text-3xl" aria-hidden="true">🧩</span>
-          <span className="text-2xl font-black text-gray-800 dark:text-white">חמשת החושים</span>
-        </button>
+          {/* Accessibility Controls */}
+          <div className="flex bg-gray-100 dark:bg-gray-700 p-1 rounded-xl">
+            {(['s', 'm', 'l'] as FontSize[]).map(size => (
+              <button 
+                key={size}
+                onClick={() => setFontSize(size)}
+                className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all ${fontSize === size ? 'bg-blue-600 text-white shadow-md' : 'text-gray-500 hover:bg-gray-200'}`}
+                title={`גודל גופן: ${size}`}
+              >
+                {size === 's' ? 'א' : size === 'm' ? 'א+' : 'א++'}
+              </button>
+            ))}
+          </div>
+        </div>
         
-        <nav className="hidden md:flex items-center gap-6" aria-label="תפריט ראשי">
-          <button onClick={() => { resetView(); scrollToSection('home'); }} className="text-gray-600 dark:text-gray-300 font-bold hover:text-blue-600 dark:hover:text-blue-400 transition-all focus:ring-2 focus:ring-blue-500 rounded-md px-2">בית</button>
-          <button onClick={() => { resetView(); scrollToSection('senses'); }} className="text-gray-600 dark:text-gray-300 font-bold hover:text-blue-600 dark:hover:text-blue-400 transition-all focus:ring-2 focus:ring-blue-500 rounded-md px-2">החושים</button>
-          <button onClick={() => { resetView(); setShowPrintables(true); }} className="text-gray-600 dark:text-gray-300 font-bold hover:text-blue-600 dark:hover:text-blue-400 transition-all focus:ring-2 focus:ring-blue-500 rounded-md px-2">דפי עבודה</button>
-          <button onClick={() => { resetView(); setShowQuiz(true); }} className="bg-blue-600 text-white font-bold px-6 py-2 rounded-full hover:bg-blue-700 transition-all shadow-md active:scale-95 focus:ring-2 focus:ring-blue-500">משימת אתגר</button>
-          <button onClick={toggleDarkMode} className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all text-xl" aria-label="החלף מצב תצוגה">{isDarkMode ? '☀️' : '🌙'}</button>
+        <nav className="flex items-center gap-4 md:gap-6" aria-label="תפריט ראשי">
+          <button onClick={() => { resetView(); speak("דפי עבודה"); setShowPrintables(true); }} className="text-gray-600 dark:text-gray-300 font-bold hover:text-blue-600 transition-all px-2">דפי עבודה</button>
+          <button onClick={() => { resetView(); speak("משימת אתגר"); setShowQuiz(true); }} className="bg-blue-600 text-white font-bold px-5 py-2 rounded-full hover:bg-blue-700 transition-all active:scale-95 shadow-lg">משימת אתגר</button>
+          <button onClick={() => { setIsDarkMode(!isDarkMode); speak("שינוי צבעי האתר"); }} className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-xl shadow-inner">{isDarkMode ? '☀️' : '🌙'}</button>
         </nav>
-
-        <button onClick={toggleDarkMode} className="md:hidden p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-xl" aria-label="החלף מצב תצוגה">{isDarkMode ? '☀️' : '🌙'}</button>
       </header>
 
-      <main id="main-content" className="flex-grow" tabIndex={-1}>
+      <main id="main-content" className="flex-grow">
         {selectedSense ? (
           <SenseDetail 
             sense={selectedSense} 
             direction={navDirection}
-            onBack={() => setSelectedSenseId(null)}
+            onBack={resetView}
             onNext={() => navigateSense('next')}
             onPrev={() => navigateSense('prev')}
           />
@@ -135,75 +113,78 @@ const App: React.FC = () => {
           <div className="py-20 px-6">
             <Quiz />
             <div className="mt-12 text-center">
-              <button onClick={() => setShowQuiz(false)} className="text-blue-600 dark:text-blue-400 font-bold hover:underline">חזרה לדף הבית</button>
+              <button onClick={resetView} className="text-blue-600 dark:text-blue-400 font-bold hover:underline">חזרה לדף הבית</button>
             </div>
           </div>
         ) : showPrintables ? (
-          <div className="py-20 px-6 bg-indigo-50/50 dark:bg-indigo-950/10 min-h-screen">
+          <div className="py-20 px-6 bg-indigo-50/20 dark:bg-indigo-950/5 min-h-screen">
              <Printables />
              <div className="mt-16 text-center">
-                <button onClick={() => setShowPrintables(false)} className="bg-white dark:bg-gray-800 text-indigo-700 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900 px-10 py-4 rounded-full font-black shadow-lg hover:shadow-xl transition-all active:scale-95">חזרה לדף הבית</button>
+                <button onClick={resetView} className="bg-white dark:bg-gray-800 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-900 px-10 py-4 rounded-full font-black shadow-lg hover:scale-105 active:scale-95 transition-all">חזרה לדף הבית</button>
              </div>
           </div>
         ) : (
-          <>
-            <section id="home" className="relative py-24 md:py-32 px-6 overflow-hidden bg-gradient-to-br from-blue-700 via-indigo-700 to-purple-800 dark:from-blue-900 dark:via-indigo-900 dark:to-purple-950 text-white">
-              <div className="max-w-6xl mx-auto relative z-10 flex flex-col md:flex-row items-center gap-16">
-                <div className="flex-1 text-center md:text-right">
-                  <h1 className="text-6xl md:text-8xl font-black leading-tight mb-8">איך אנחנו מרגישים את העולם?</h1>
-                  <p className="text-2xl md:text-3xl opacity-90 mb-12 max-w-2xl leading-relaxed font-light">בואו למסע מרגש בין העיניים, האוזניים והידיים! נגלה איך חמשת החושים שלנו עובדים יחד.</p>
+          <div className="animate-fade-in">
+            <section className="relative py-24 md:py-32 px-6 overflow-hidden bg-gradient-to-br from-indigo-900 via-blue-900 to-gray-900 text-white text-center md:text-right">
+              <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16">
+                <div className="flex-1">
+                  <h1 className="text-6xl md:text-8xl font-black mb-8 leading-tight animate-slide-up">איך אנחנו מרגישים את העולם?</h1>
+                  <p className="text-2xl md:text-3xl opacity-80 mb-12 max-w-2xl leading-relaxed">בואו למסע מרגש בין העיניים, האוזניים והידיים! נגלה איך חמשת החושים שלנו עובדים יחד.</p>
                   <div className="flex flex-wrap gap-6 justify-center md:justify-start">
-                    <button onClick={() => { setNavDirection('next'); scrollToSection('senses'); }} className="bg-white text-blue-800 px-10 py-5 rounded-3xl font-black text-xl shadow-2xl hover:scale-105 transition-all active:scale-95">בואו נתחיל ללמוד</button>
-                    <button onClick={() => setShowQuiz(true)} className="bg-yellow-400 text-gray-900 px-10 py-5 rounded-3xl font-black text-xl shadow-2xl hover:scale-105 transition-all active:scale-95">למשימת האתגר</button>
+                    <button onClick={() => { speak("בואו נתחיל ללמוד"); document.getElementById('senses')?.scrollIntoView({behavior:'smooth'}); }} className="bg-blue-600 text-white px-10 py-5 rounded-3xl font-black text-xl shadow-2xl hover:scale-105 transition-all active:scale-95">בואו נתחיל ללמוד</button>
                   </div>
                 </div>
-                <div className="flex-1 hidden md:flex justify-center" aria-hidden="true">
-                   <div className="grid grid-cols-2 gap-6 animate-pulse duration-[4000ms]">
-                      <div className="bg-white/10 backdrop-blur-md p-10 rounded-[3rem] text-8xl transition-all hover:scale-110 hover:bg-white/20">👁️</div>
-                      <div className="bg-white/10 backdrop-blur-md p-10 rounded-[3rem] text-8xl mt-12 transition-all hover:scale-110 hover:bg-white/20">👂</div>
-                      <div className="bg-white/10 backdrop-blur-md p-10 rounded-[3rem] text-8xl -mt-6 transition-all hover:scale-110 hover:bg-white/20">👃</div>
-                      <div className="bg-white/10 backdrop-blur-md p-10 rounded-[3rem] text-8xl mt-6 transition-all hover:scale-110 hover:bg-white/20">✋</div>
-                   </div>
+                <div className="flex-1 hidden md:grid grid-cols-2 gap-6 opacity-30">
+                  {['👁️', '👂', '👃', '✋'].map(icon => <div key={icon} className="text-9xl grayscale hover:grayscale-0 transition-all cursor-default">{icon}</div>)}
                 </div>
               </div>
             </section>
 
             <section id="senses" className="py-24 px-6 max-w-7xl mx-auto">
-              <div className="text-center mb-20">
-                <h2 className="text-5xl font-black text-gray-800 dark:text-white mb-6">חמשת המופלאים</h2>
-                <div className="h-2 w-32 bg-blue-600 mx-auto rounded-full mb-6"></div>
-                <p className="text-2xl text-gray-600 dark:text-gray-400">בחרו חוש כדי לגלות עליו עוד</p>
+              <div className="text-center mb-16">
+                <h2 className="text-5xl font-black text-gray-800 dark:text-white mb-4">בחרו חוש לגלות</h2>
+                <div className="h-2 w-24 bg-blue-600 mx-auto rounded-full"></div>
               </div>
 
-              <div ref={scrollContainerRef} className="flex overflow-x-auto pb-12 gap-8 sm:grid sm:grid-cols-2 lg:grid-cols-5 no-scrollbar scroll-smooth">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
                 {SENSES_DATA.map(sense => (
-                  <div key={sense.id} className="flex-shrink-0 w-[85vw] sm:w-auto">
-                    <SenseCard sense={sense} onClick={(id) => { setNavDirection('next'); setSelectedSenseId(id); }} />
-                  </div>
+                  <SenseCard key={sense.id} sense={sense} onClick={(id) => { setSelectedSenseId(id); speak(`חוש ה${sense.name}`); }} />
                 ))}
               </div>
             </section>
 
-            <section className="bg-indigo-700 dark:bg-indigo-900 py-24 px-6 text-white text-center">
+            <section className="bg-indigo-600 dark:bg-indigo-800 py-20 px-6 text-white text-center">
                <div className="max-w-4xl mx-auto">
-                 <h2 className="text-5xl font-black mb-8">רוצים להמשיך ללמוד בכיף?</h2>
-                 <p className="text-2xl opacity-90 mb-12">הכנו עבורכם דפי עבודה, מבוכים ודפי צביעה להדפסה ביתית.</p>
-                 <button onClick={() => setShowPrintables(true)} className="bg-white text-indigo-800 px-12 py-5 rounded-3xl font-black text-2xl shadow-2xl hover:scale-105 transition-all active:scale-95">לכל דפי העבודה 🖨️</button>
+                 <h2 className="text-4xl font-black mb-6">רוצים להמשיך ללמוד בכיף?</h2>
+                 <p className="text-xl opacity-80 mb-10">הכנו עבורכם דפי עבודה, מבוכים ודפי צביעה להדפסה ביתית.</p>
+                 <button onClick={() => { setShowPrintables(true); speak("לכל דפי העבודה"); }} className="bg-white text-indigo-800 px-12 py-5 rounded-3xl font-black text-xl shadow-2xl hover:scale-105 active:scale-95 transition-all">לכל דפי העבודה 🖨️</button>
                </div>
             </section>
-          </>
+          </div>
         )}
       </main>
 
-      {showBackToTop && (
-        <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="fixed bottom-8 left-8 p-4 bg-blue-600 text-white rounded-full shadow-2xl hover:bg-blue-700 transition-all animate-in fade-in slide-in-from-bottom-4 z-40" aria-label="חזרה לראש הדף">
-          <span className="text-2xl">↑</span>
-        </button>
-      )}
-
-      <footer className="bg-gray-900 dark:bg-black text-white py-16 px-6 text-center border-t border-white/5" role="contentinfo">
-        <p className="text-xl font-bold mb-2">מסע בחמשת החושים</p>
-        <p className="text-gray-500">© {new Date().getFullYear()} כל הזכויות שמורות. למידה חווייתית לילדים.</p>
+      <footer className="bg-gray-100 dark:bg-black text-gray-600 dark:text-gray-400 py-12 px-6 border-t border-gray-200 dark:border-white/5" role="contentinfo">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="text-center md:text-right">
+            <p className="text-2xl font-black text-gray-900 dark:text-white mb-2">חמשת החושים</p>
+            <p className="text-sm">לימוד חווייתי ונגיש לילדים.</p>
+            <p className="mt-4 font-bold text-blue-600 dark:text-blue-400">© Noam Gold AI 2026</p>
+          </div>
+          
+          <div className="flex flex-col items-center md:items-start gap-2">
+            <p className="font-bold text-gray-800 dark:text-gray-200">Send Feedback / צרו קשר</p>
+            <a href="mailto:goldnoamai@gmail.com" className="text-lg hover:text-blue-600 transition-colors font-mono">goldnoamai@gmail.com</a>
+          </div>
+          
+          <div className="flex gap-4">
+            <span className="text-3xl opacity-50">👁️</span>
+            <span className="text-3xl opacity-50">👂</span>
+            <span className="text-3xl opacity-50">👃</span>
+            <span className="text-3xl opacity-50">👅</span>
+            <span className="text-3xl opacity-50">✋</span>
+          </div>
+        </div>
       </footer>
     </div>
   );

@@ -1,27 +1,37 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { QUIZ_QUESTIONS } from '../constants.tsx';
 import { SenseId } from '../types';
 
 const Quiz: React.FC = () => {
-  // Randomize questions order on component mount and provide a reset mechanism
-  const [questions, setQuestions] = useState(() => 
-    [...QUIZ_QUESTIONS].sort(() => Math.random() - 0.5)
-  );
+  const [questions, setQuestions] = useState(() => [...QUIZ_QUESTIONS].sort(() => Math.random() - 0.5));
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [feedback, setFeedback] = useState<{ isCorrect: boolean; text: string } | null>(null);
+  const [isPaused, setIsPaused] = useState(false);
+
+  const speak = (text: string) => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'he-IL';
+      window.speechSynthesis.speak(utterance);
+    }
+  };
 
   const handleAnswer = (selectedId: SenseId) => {
+    if (isPaused) return;
     const question = questions[currentQuestionIdx];
     const isCorrect = selectedId === question.correctSenseId;
 
     if (isCorrect) {
       setScore(prev => prev + 1);
       setFeedback({ isCorrect: true, text: 'כל הכבוד! תשובה נכונה.' });
+      speak('כל הכבוד! תשובה נכונה.');
     } else {
       setFeedback({ isCorrect: false, text: 'לא נורא, נסו שוב בשאלה הבאה.' });
+      speak('לא נורא, נסו שוב בשאלה הבאה.');
     }
 
     setTimeout(() => {
@@ -30,8 +40,9 @@ const Quiz: React.FC = () => {
         setCurrentQuestionIdx(prev => prev + 1);
       } else {
         setShowResult(true);
+        speak(`סיימתם! הציון שלכם הוא ${score + (isCorrect ? 1 : 0)} מתוך ${questions.length}`);
       }
-    }, 1800);
+    }, 2000);
   };
 
   const resetQuiz = () => {
@@ -40,20 +51,16 @@ const Quiz: React.FC = () => {
     setScore(0);
     setShowResult(false);
     setFeedback(null);
+    setIsPaused(false);
+    speak('התחלנו מחדש! בהצלחה.');
   };
 
   if (showResult) {
     return (
-      <div className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl text-center max-w-lg mx-auto border-4 border-yellow-500" role="alert" aria-live="polite">
+      <div className="bg-white dark:bg-gray-800 p-10 rounded-[3rem] shadow-2xl text-center max-w-lg mx-auto border-4 border-blue-500 animate-zoom-in">
         <h2 className="text-4xl font-black mb-4 text-gray-800 dark:text-white">סיימתם את האתגר! 🎉</h2>
-        <p className="text-2xl mb-6 font-bold text-gray-700 dark:text-gray-300">צברתם {score} מתוך {questions.length} נקודות.</p>
-        <button 
-          onClick={resetQuiz}
-          className="bg-blue-700 text-white px-8 py-4 rounded-full font-black text-xl hover:bg-blue-800 transition-colors shadow-lg focus:ring-4 focus:ring-blue-300 active:scale-95"
-          aria-label="התחל את המבחן מחדש"
-        >
-          נסו שוב
-        </button>
+        <p className="text-3xl mb-8 font-bold text-gray-700 dark:text-gray-300">הישג: {score} מתוך {questions.length}</p>
+        <button onClick={resetQuiz} className="bg-blue-600 text-white px-10 py-5 rounded-3xl font-black text-2xl hover:scale-105 transition-all shadow-xl">נסו שוב</button>
       </div>
     );
   }
@@ -61,42 +68,49 @@ const Quiz: React.FC = () => {
   const question = questions[currentQuestionIdx];
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-xl max-w-2xl mx-auto border border-gray-100 dark:border-gray-700 relative overflow-hidden transition-colors duration-300" role="form" aria-labelledby="question-heading">
-      <div className="mb-8">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest" aria-hidden="true">שאלה {currentQuestionIdx + 1} מתוך {questions.length}</span>
-          <span className="text-sm font-bold text-green-600 dark:text-green-400">הישג: {score}</span>
+    <div className={`bg-white dark:bg-gray-800 p-8 md:p-12 rounded-[3rem] shadow-2xl max-w-2xl mx-auto border border-gray-100 dark:border-gray-700 relative overflow-hidden transition-all duration-300 ${isPaused ? 'filter blur-sm pointer-events-none' : ''}`}>
+      {/* Quiz UI */}
+      <div className="mb-10">
+        <div className="flex justify-between items-center mb-6">
+          <span className="text-sm font-black text-blue-600 uppercase tracking-widest">שאלה {currentQuestionIdx + 1} מתוך {questions.length}</span>
+          <button onClick={() => speak(question.scenario)} className="text-2xl opacity-50 hover:opacity-100 transition-all">🔊 הקרא שאלה</button>
         </div>
-        <span className="sr-only">שאלה מספר {currentQuestionIdx + 1} מתוך {questions.length} שאלות</span>
-        <h2 id="question-heading" className="text-2xl font-bold mt-2 text-gray-800 dark:text-white leading-relaxed">{question.scenario}</h2>
+        <h2 className="text-3xl font-bold text-gray-800 dark:text-white leading-tight">{question.scenario}</h2>
       </div>
 
-      <div className="grid grid-cols-1 gap-4" role="radiogroup" aria-label="בחר את החוש הנכון">
+      <div className="grid grid-cols-1 gap-4">
         {question.options.map((option) => (
           <button
             key={option.id}
             disabled={!!feedback}
             onClick={() => handleAnswer(option.id)}
-            className={`p-4 rounded-xl text-right font-bold transition-all border-2 text-lg active:scale-98 active:brightness-95 ${
-              feedback ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-500 dark:hover:border-blue-400 border-gray-100 dark:border-gray-700 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 dark:text-gray-200'
+            onMouseEnter={() => speak(option.label)}
+            className={`p-6 rounded-2xl text-right font-black transition-all border-2 text-xl active:scale-95 ${
+              feedback ? 'opacity-30' : 'hover:bg-blue-50 dark:hover:bg-blue-900/20 border-gray-100 dark:border-gray-700'
             }`}
-            aria-label={`בחר ${option.label}`}
           >
             {option.label}
           </button>
         ))}
       </div>
 
+      <div className="mt-12 flex justify-between items-center">
+        <button onClick={() => setIsPaused(true)} className="text-gray-400 font-bold hover:text-gray-600">⏸️ השהה</button>
+        <button onClick={resetQuiz} className="text-red-400 font-bold hover:text-red-600">🔄 אפס מבחן</button>
+      </div>
+
       {feedback && (
-        <div 
-          className={`absolute inset-0 flex items-center justify-center z-20 transition-all ${feedback.isCorrect ? 'bg-green-600/95' : 'bg-red-600/95'}`}
-          role="status"
-          aria-live="assertive"
-        >
-          <div className="text-white text-center p-6 animate-in zoom-in duration-300">
-            <span className="text-7xl block mb-4" aria-hidden="true">{feedback.isCorrect ? '🌟' : '💡'}</span>
-            <p className="text-3xl font-black">{feedback.text}</p>
+        <div className={`absolute inset-0 flex items-center justify-center z-50 transition-all ${feedback.isCorrect ? 'bg-green-600/90' : 'bg-red-600/90'}`}>
+          <div className="text-white text-center p-8 animate-zoom-in">
+            <span className="text-8xl block mb-6">{feedback.isCorrect ? '🌟' : '💡'}</span>
+            <p className="text-4xl font-black">{feedback.text}</p>
           </div>
+        </div>
+      )}
+
+      {isPaused && (
+        <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm pointer-events-auto">
+          <button onClick={() => setIsPaused(false)} className="bg-white text-blue-800 p-8 rounded-full shadow-2xl hover:scale-110 transition-all text-5xl">▶️</button>
         </div>
       )}
     </div>

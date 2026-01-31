@@ -7,10 +7,12 @@ export enum SenseId {
   TOUCH = 'touch'
 }
 
+export type FontSize = 's' | 'm' | 'l';
+
 export interface Example {
   title: string;
   description: string;
-  imageUrls: string[]; // Changed to support multiple images
+  imageUrls: string[];
 }
 
 export interface SenseData {
@@ -22,7 +24,7 @@ export interface SenseData {
   icon: string;
   imageUrl: string;
   examples: Example[];
-  printableId?: string; // Link to a worksheet
+  printableId?: string;
 }
 
 export interface QuizQuestion {
