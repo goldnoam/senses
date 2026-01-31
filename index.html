@@ -12,58 +12,8 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/48/brainstorm skill.png" />
 
-    <!-- Google AdSense Placeholder (Update with your client ID) -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0000000000000000" crossorigin="anonymous"></script>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Assistant', 'sans-serif'],
-            },
-            animation: {
-              'pulse-subtle': 'pulse-subtle 3s ease-in-out infinite',
-              'fade-in': 'fadeIn 0.3s ease-out forwards',
-              'zoom-in': 'zoomIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-              'slide-up': 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-            },
-            keyframes: {
-              fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
-              zoomIn: { '0%': { transform: 'scale(0.95)', opacity: '0' }, '100%': { transform: 'scale(1)', opacity: '1' } },
-              slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
-              'pulse-subtle': {
-                '0%, 100%': { opacity: 0.1, transform: 'scale(1)' },
-                '50%': { opacity: 0.3, transform: 'scale(1.1)' },
-              },
-            }
-          },
-        },
-      }
-    </script>
-    <style>
-      :root {
-        --base-font-size: 16px;
-      }
-      body {
-        font-family: 'Assistant', sans-serif;
-        font-size: var(--base-font-size);
-        transition: background-color 0.3s ease, color 0.3s ease, font-size 0.2s ease;
-      }
-      .font-size-s { --base-font-size: 14px; }
-      .font-size-m { --base-font-size: 18px; }
-      .font-size-l { --base-font-size: 22px; }
-
-      .no-scrollbar::-webkit-scrollbar { display: none; }
-      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-      
-      .paper-shadow {
-        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-      }
-    </style>
+    <link rel="stylesheet" href="index.css">
+    
     <script type="importmap">
     {
       "imports": {
@@ -76,5 +26,6 @@
   </head>
   <body class="bg-gray-900 text-white font-size-m">
     <div id="root"></div>
+    <script type="module" src="index.tsx"></script>
   </body>
 </html>
