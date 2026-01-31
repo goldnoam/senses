@@ -67,85 +67,84 @@ const Quiz: React.FC = () => {
 
   if (showResult) {
     return (
-      <div className="bg-white dark:bg-gray-800 p-10 rounded-[3rem] shadow-2xl text-center max-w-lg mx-auto border-4 border-blue-500 animate-zoom-in">
-        <h2 className="text-4xl font-black mb-4 text-gray-800 dark:text-white">סיימתם את האתגר! 🎉</h2>
-        <p className="text-3xl mb-8 font-bold text-gray-700 dark:text-gray-300">הישג: {score} מתוך {questions.length}</p>
-        <button onClick={resetQuiz} className="bg-blue-600 text-white px-10 py-5 rounded-3xl font-black text-2xl hover:scale-105 transition-all shadow-xl active:scale-95">נסו שוב</button>
+      <div className="bg-white dark:bg-gray-800 p-12 rounded-[3.5rem] shadow-2xl text-center max-w-xl mx-auto border-8 border-blue-500 animate-zoom-in">
+        <div className="text-8xl mb-8">🏆</div>
+        <h2 className="text-5xl font-black mb-6 text-gray-800 dark:text-white">סיימתם את האתגר!</h2>
+        <p className="text-4xl mb-12 font-bold text-gray-700 dark:text-gray-300">הישג: {score} מתוך {questions.length}</p>
+        <button onClick={resetQuiz} className="bg-blue-600 text-white px-12 py-6 rounded-[2rem] font-black text-2xl hover:scale-105 transition-all shadow-2xl active:scale-95">נסו שוב מהתחלה</button>
       </div>
     );
   }
 
   return (
-    <div className="relative max-w-2xl mx-auto">
-      <div className={`bg-white dark:bg-gray-800 p-8 md:p-12 rounded-[3rem] shadow-2xl border border-gray-100 dark:border-gray-700 relative overflow-hidden transition-all duration-300 ${isPaused ? 'filter blur-sm pointer-events-none' : ''}`}>
-        <div className="mb-10">
-          <div className="flex justify-between items-center mb-6">
-            <span className="text-sm font-black text-blue-600 uppercase tracking-widest">שאלה {currentQuestionIdx + 1} מתוך {questions.length}</span>
-            <button onClick={() => speak(question.scenario)} className="text-2xl p-2 bg-gray-100 dark:bg-gray-700 rounded-full hover:bg-gray-200" title="הקרא שאלה">🔊</button>
+    <div className="relative max-w-3xl mx-auto">
+      <div className={`bg-white dark:bg-gray-800 p-10 md:p-16 rounded-[3.5rem] shadow-2xl border-4 border-gray-100 dark:border-gray-700 relative overflow-hidden transition-all duration-500 ${isPaused ? 'filter blur-md grayscale pointer-events-none' : ''}`}>
+        <div className="mb-12">
+          <div className="flex justify-between items-center mb-10">
+            <span className="text-lg font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest bg-blue-50 dark:bg-blue-900/30 px-6 py-2 rounded-full shadow-inner">משימה {currentQuestionIdx + 1} מתוך {questions.length}</span>
+            <button onClick={() => speak(question.scenario)} className="text-4xl p-4 bg-gray-100 dark:bg-gray-700 rounded-2xl hover:bg-blue-100 dark:hover:bg-blue-900 transition-all shadow-md" title="הקרא שאלה">🔊</button>
           </div>
-          <h2 className="text-3xl font-bold text-gray-800 dark:text-white leading-tight">{question.scenario}</h2>
+          <h2 className="text-4xl md:text-5xl font-black text-gray-800 dark:text-white leading-[1.3] text-right">{question.scenario}</h2>
         </div>
 
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 gap-6">
           {question.options.map((option, index) => (
             <button
               key={option.id}
               disabled={!!feedback}
               onClick={() => handleAnswer(option.id)}
               onMouseEnter={() => { if(!feedback) speak(option.label); }}
-              className={`p-6 rounded-2xl text-right font-black transition-all border-2 text-xl active:scale-95 ${
-                feedback ? 'opacity-30' : 
-                selectedOptionIndex === index ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30' : 'border-gray-100 dark:border-gray-700 hover:border-blue-300'
+              className={`p-8 rounded-[2rem] text-right font-black transition-all border-4 text-2xl active:scale-[0.98] ${
+                feedback ? 'opacity-20' : 
+                selectedOptionIndex === index ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 shadow-xl scale-[1.02]' : 'border-gray-100 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-700 shadow-md'
               }`}
             >
+              <span className="ml-6 opacity-30 font-mono">0{index + 1}</span>
               {option.label}
             </button>
           ))}
         </div>
 
-        <div className="mt-12 flex justify-between items-center">
-          <button onClick={() => setIsPaused(true)} className="flex items-center gap-2 text-gray-400 font-bold hover:text-gray-600">
-            <span className="text-2xl">⏸️</span> השהה
+        <div className="mt-16 flex justify-between items-center border-t-4 border-gray-100 dark:border-gray-700 pt-10">
+          <button onClick={() => setIsPaused(true)} className="flex items-center gap-4 text-gray-400 font-black hover:text-gray-600 dark:hover:text-gray-200 text-2xl group transition-all">
+            <span className="p-4 bg-gray-100 dark:bg-gray-700 rounded-2xl group-hover:scale-110">⏸️</span> השהה
           </button>
-          <button onClick={resetQuiz} className="flex items-center gap-2 text-red-400 font-bold hover:text-red-600">
-            <span className="text-2xl">🔄</span> אפס מבחן
+          <button onClick={resetQuiz} className="flex items-center gap-4 text-red-400 font-black hover:text-red-600 text-2xl group transition-all">
+            <span className="p-4 bg-red-50 dark:bg-red-900/20 rounded-2xl group-hover:scale-110">🔄</span> אתחל
           </button>
         </div>
 
         {feedback && (
-          <div className={`absolute inset-0 flex items-center justify-center z-50 transition-all ${feedback.isCorrect ? 'bg-green-600/90' : 'bg-red-600/90'}`}>
-            <div className="text-white text-center p-8 animate-zoom-in">
-              <span className="text-8xl block mb-6">{feedback.isCorrect ? '🌟' : '💡'}</span>
-              <p className="text-4xl font-black">{feedback.text}</p>
+          <div className={`absolute inset-0 flex items-center justify-center z-50 transition-all ${feedback.isCorrect ? 'bg-green-600/95' : 'bg-red-600/95'}`}>
+            <div className="text-white text-center p-12 animate-zoom-in">
+              <span className="text-[12rem] block mb-10 drop-shadow-2xl">{feedback.isCorrect ? '🌟' : '💡'}</span>
+              <p className="text-6xl font-black drop-shadow-lg">{feedback.text}</p>
             </div>
           </div>
         )}
 
         {isPaused && (
-          <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm pointer-events-auto">
-            <button onClick={() => setIsPaused(false)} className="bg-white text-blue-800 p-8 rounded-full shadow-2xl hover:scale-110 transition-all text-5xl">▶️</button>
+          <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-xl pointer-events-auto">
+            <button onClick={() => setIsPaused(false)} className="bg-white text-blue-800 p-12 rounded-full shadow-2xl hover:scale-125 transition-all text-7xl animate-pulse">▶️</button>
           </div>
         )}
       </div>
 
-      {/* Mobile WASD/Navigation Pad */}
-      <div className="mt-8 flex justify-center gap-4 md:hidden">
+      {/* WASD NAVIGATION PAD FOR MOBILE/TOUCH */}
+      <div className="mt-12 flex justify-center items-center gap-8 md:hidden">
         <button 
           onClick={() => setSelectedOptionIndex(prev => Math.max(0, prev - 1))}
-          className="w-16 h-16 bg-gray-700 text-white rounded-2xl text-2xl font-bold flex items-center justify-center shadow-lg active:bg-blue-600"
-          aria-label="למעלה / אפשרות קודמת"
+          className="w-24 h-24 bg-gray-800 text-white rounded-[2rem] text-4xl font-black flex items-center justify-center shadow-2xl active:bg-blue-600 border-b-8 border-gray-900 active:border-b-0 active:translate-y-2 transition-all"
         >W</button>
-        <div className="flex flex-col gap-4">
-          <button 
-            onClick={() => handleAnswer(question.options[selectedOptionIndex].id)}
-            className="w-16 h-16 bg-blue-600 text-white rounded-2xl text-2xl font-bold flex items-center justify-center shadow-lg active:scale-95"
-            aria-label="בחר"
-          >OK</button>
-        </div>
+        
+        <button 
+          onClick={() => handleAnswer(question.options[selectedOptionIndex].id)}
+          className="w-32 h-32 bg-blue-600 text-white rounded-[2.5rem] text-3xl font-black flex items-center justify-center shadow-2xl active:bg-blue-700 border-b-8 border-blue-800 active:border-b-0 active:translate-y-2 transition-all"
+        >בחר</button>
+
         <button 
           onClick={() => setSelectedOptionIndex(prev => Math.min(question.options.length - 1, prev + 1))}
-          className="w-16 h-16 bg-gray-700 text-white rounded-2xl text-2xl font-bold flex items-center justify-center shadow-lg active:bg-blue-600"
-          aria-label="למטה / אפשרות הבאה"
+          className="w-24 h-24 bg-gray-800 text-white rounded-[2rem] text-4xl font-black flex items-center justify-center shadow-2xl active:bg-blue-600 border-b-8 border-gray-900 active:border-b-0 active:translate-y-2 transition-all"
         >S</button>
       </div>
     </div>
