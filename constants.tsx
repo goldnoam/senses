@@ -14,29 +14,29 @@ export const PRINTABLES: PrintableResource[] = [
     id: 'p1',
     title: 'צביעת חמשת החושים',
     type: 'דף צביעה',
-    imageUrl: 'https://img.freepik.com/free-vector/hand-drawn-five-senses-concept_23-2149120150.jpg?t=st=1716123456~exp=1716127056~hmac=coloring_placeholder',
-    description: 'דף צביעה חווייתי הכולל איורים של העין, האוזן, האף, הלשון והיד. מושלם ללימוד זיהוי האיברים.'
+    imageUrl: 'https://cdn.pixabay.com/photo/2016/03/31/15/27/anatomy-1293237_1280.png',
+    description: 'דף צביעה חווייתי הכולל איורים של איברי החישה. מושלם ללימוד זיהוי האיברים דרך יצירה.'
   },
   {
     id: 'p2',
     title: 'מבוך הראייה המאתגר',
     type: 'דף עבודה',
-    imageUrl: 'https://img.freepik.com/free-vector/maze-game-template-for-kids_23-2150153372.jpg?t=st=1716123456~exp=1716127056~hmac=maze_placeholder',
-    description: 'עזרו לעין למצוא את הדרך אל הפרפר! תרגול קשר עין-יד וריכוז.'
+    imageUrl: 'https://cdn.pixabay.com/photo/2014/04/03/10/37/maze-310933_1280.png',
+    description: 'עזרו לעין למצוא את הדרך אל האובייקט! תרגול קשר עין-יד וריכוז באמצעות מבוך מורכב.'
   },
   {
     id: 'p3',
-    title: 'משימת התאמת חפצים',
+    title: 'תרגול התאמת חושים',
     type: 'תרגול',
-    imageUrl: 'https://img.freepik.com/free-vector/worksheet-matching-game-with-objects_23-2148861346.jpg?t=st=1716123456~exp=1716127056~hmac=matching_placeholder',
-    description: 'מתחו קו בין המאכלים, הצלילים והמרקמים לבין החוש המתאים להם ביותר.'
+    imageUrl: 'https://cdn.pixabay.com/photo/2017/02/01/10/44/food-2029580_1280.png',
+    description: 'דף עבודה המציג מגוון מאכלים ופריטים לצביעה והתאמה לחוש המתאים.'
   },
   {
     id: 'p4',
-    title: 'ממלכת האוכל והטעם',
+    title: 'ממלכת הטעמים - דף צביעה',
     type: 'דף צביעה',
-    imageUrl: 'https://img.freepik.com/free-vector/collection-hand-drawn-food-elements_23-2148880467.jpg?t=st=1716123456~exp=1716127056~hmac=food_coloring',
-    description: 'דף צביעה של פירות, ירקות וממתקים. מיינו אותם לפי טעמם: מתוק, מלוח או חמוץ.'
+    imageUrl: 'https://cdn.pixabay.com/photo/2013/07/12/12/36/ice-cream-146030_1280.png',
+    description: 'דף צביעה של גלידה ומאכלים מתוקים. הזדמנות לדבר על חוש הטעם בזמן הצביעה.'
   }
 ];
 

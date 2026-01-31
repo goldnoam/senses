@@ -31,70 +31,79 @@ const Printables: React.FC = () => {
               align-items: center; 
               min-height: 100vh; 
               font-family: 'Assistant', sans-serif; 
-              text-align: center; 
-              background: white; 
+              background: #fff;
+              color: #000;
             }
-            .page {
+            .worksheet-container {
               width: 210mm;
               min-height: 297mm;
               padding: 20mm;
               box-sizing: border-box;
               display: flex;
               flex-direction: column;
-              border: 1px solid #eee;
+              border: 1px solid #ddd;
               position: relative;
             }
-            .header {
+            .worksheet-header {
               display: flex;
               justify-content: space-between;
-              border-bottom: 2px solid #333;
+              border-bottom: 2px solid #000;
               padding-bottom: 10px;
               margin-bottom: 30px;
-              font-size: 14px;
+              font-size: 18px;
+              font-weight: bold;
             }
-            .title-area {
+            .worksheet-title {
+              text-align: center;
               margin-bottom: 40px;
             }
             h1 { 
               margin: 0; 
-              color: #000; 
-              font-size: 28px; 
-              font-weight: 700;
+              font-size: 32px; 
+              text-decoration: underline;
             }
-            .main-image { 
+            .worksheet-image-wrapper {
+              flex: 1;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-bottom: 40px;
+            }
+            img { 
               max-width: 100%; 
               max-height: 180mm;
-              height: auto; 
-              margin: auto;
-              display: block;
+              object-fit: contain;
+              filter: grayscale(100%) contrast(1.2);
             }
-            .footer { 
-              margin-top: auto;
-              font-size: 12px; 
-              color: #777; 
-              border-top: 1px solid #ddd;
+            .worksheet-footer {
+              text-align: center;
+              font-size: 12px;
+              color: #555;
+              border-top: 1px dashed #ccc;
               padding-top: 10px;
             }
             @media print {
-              body { background: white; }
-              .page { border: none; width: auto; height: auto; padding: 10mm; }
+              body { background: none; }
+              .worksheet-container { border: none; width: auto; height: auto; padding: 10mm; }
               .no-print { display: none; }
             }
           </style>
         </head>
         <body>
-          <div class="page">
-            <div class="header">
+          <div class="worksheet-container">
+            <div class="worksheet-header">
               <span>שם: _________________</span>
               <span>תאריך: _________________</span>
             </div>
-            <div class="title-area">
+            <div class="worksheet-title">
               <h1>${title}</h1>
-              <p>לימוד חווייתי - חמשת החושים</p>
+              <p>לימוד חווייתי - מסע בחמשת החושים</p>
             </div>
-            <img src="${imageUrl}" alt="${title}" class="main-image" />
-            <div class="footer">
-              נוצר עבור אתר "חמשת החושים" | © Noam Gold AI 2026
+            <div class="worksheet-image-wrapper">
+              <img src="${imageUrl}" alt="${title}" />
+            </div>
+            <div class="worksheet-footer">
+              נוצר עבור אתר "חמשת החושים" | (C) Noam Gold AI 2026
             </div>
           </div>
           <script>
@@ -110,74 +119,87 @@ const Printables: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4">
-      <div className="text-center mb-12">
-        <h2 className="text-4xl font-black text-indigo-900 dark:text-indigo-300 mb-4">דפי עבודה וצביעה</h2>
-        <p className="text-xl text-gray-600 dark:text-gray-400">דפי צביעה מקצועיים ואיורי קו המותאמים להדפסה ביתית</p>
+      <div className="text-center mb-16">
+        <h2 className="text-5xl font-black text-indigo-900 dark:text-indigo-300 mb-6">מרכז דפי העבודה</h2>
+        <p className="text-2xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">כאן תוכלו למצוא דפי צביעה, מבוכים ותרגילים המיועדים להדפסה ולימוד מהנה בבית או בכיתה.</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
         {PRINTABLES.map((item) => (
           <article 
             key={item.id} 
             onClick={() => setPreviewItem(item)}
-            className="group bg-white dark:bg-gray-800 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col hover:shadow-2xl hover:-translate-y-2 transition-all cursor-pointer" 
+            className="group bg-white dark:bg-gray-800 rounded-[2.5rem] shadow-lg border-2 border-transparent hover:border-indigo-500 dark:hover:border-indigo-400 overflow-hidden flex flex-col hover:shadow-2xl transition-all cursor-pointer transform hover:-translate-y-2" 
           >
-            <div className="relative h-72 bg-gray-50 dark:bg-gray-900 overflow-hidden">
-              <img src={item.imageUrl} alt="" className="w-full h-full object-cover grayscale opacity-70 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-500" />
-              <div className="absolute top-4 right-4 bg-indigo-600 text-white px-4 py-1.5 rounded-full text-xs font-black shadow-md uppercase">{item.type}</div>
-              <div className="absolute inset-0 bg-indigo-900/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-300">
-                <div className="bg-white text-indigo-900 px-6 py-3 rounded-2xl font-black shadow-2xl flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                   <span>🔍</span> תצוגה מקדימה
-                </div>
+            <div className="relative h-64 bg-gray-50 dark:bg-gray-900/50 flex items-center justify-center p-6">
+              <img 
+                src={item.imageUrl} 
+                alt="" 
+                className="max-w-full max-h-full object-contain grayscale opacity-60 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-500" 
+              />
+              <div className="absolute top-6 right-6 bg-indigo-600 text-white px-4 py-1.5 rounded-full text-xs font-black shadow-lg">
+                {item.type}
               </div>
             </div>
-            <div className="p-6 flex-grow flex flex-col">
-              <h3 className="text-xl font-black mb-2 text-gray-800 dark:text-white group-hover:text-indigo-600 transition-colors">{item.title}</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-6 flex-grow leading-relaxed line-clamp-2">{item.description}</p>
-              <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-black text-sm"><span>🖨️</span> לחצו להדפסה</div>
+            <div className="p-8 flex-grow flex flex-col border-t border-gray-100 dark:border-gray-700">
+              <h3 className="text-2xl font-black mb-3 text-gray-800 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{item.title}</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-lg mb-8 flex-grow leading-relaxed line-clamp-2">{item.description}</p>
+              <div className="flex items-center gap-3 text-indigo-600 dark:text-indigo-400 font-black text-lg">
+                <span className="text-2xl">🖨️</span> לחצו לתצוגה והדפסה
+              </div>
             </div>
           </article>
         ))}
       </div>
 
-      {/* FIXED PORTAL PREVIEW */}
+      {/* PORTAL PREVIEW */}
       {previewItem && (
         <div 
-          className="fixed inset-0 z-[99999] flex items-center justify-center p-4 md:p-10 bg-black/95 backdrop-blur-xl animate-fade-in"
+          className="fixed inset-0 z-[99999] flex items-center justify-center p-4 md:p-12 bg-black/95 backdrop-blur-xl animate-fade-in"
           onClick={() => setPreviewItem(null)}
         >
           <div 
-            className="bg-gray-50 dark:bg-gray-900 rounded-[2.5rem] w-full max-w-5xl h-full max-h-[92vh] overflow-hidden shadow-2xl flex flex-col md:flex-row animate-zoom-in border border-white/10"
+            className="bg-white dark:bg-gray-900 rounded-[3rem] w-full max-w-6xl h-full max-h-[92vh] overflow-hidden shadow-2xl flex flex-col lg:flex-row animate-zoom-in border border-white/10"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="md:w-3/5 h-[45vh] md:h-auto relative bg-gray-200 dark:bg-gray-800 flex items-center justify-center p-6 md:p-12">
-               <div className="bg-white rounded-lg shadow-2xl p-4 md:p-8 w-full h-full max-w-md relative border border-gray-100 flex flex-col">
-                  {/* Decorative Worksheet Header */}
-                  <div className="flex justify-between text-[10px] border-b pb-2 mb-4 text-gray-400">
-                    <span>שם: __________</span>
-                    <span>תאריך: __________</span>
+            {/* Visual Worksheet Side */}
+            <div className="lg:w-3/5 h-[40vh] lg:h-auto relative bg-gray-100 dark:bg-gray-800 flex items-center justify-center p-6 md:p-12 overflow-auto">
+               <div className="bg-white rounded-lg shadow-2xl p-6 md:p-12 w-full max-w-[210mm] aspect-[210/297] relative border border-gray-200 flex flex-col text-black">
+                  <div className="flex justify-between text-[10px] md:text-sm border-b-2 border-black pb-2 mb-6 font-bold">
+                    <span>שם: _________________</span>
+                    <span>תאריך: _________________</span>
                   </div>
-                  <img src={previewItem.imageUrl} alt={previewItem.title} className="w-full h-full object-contain" />
+                  <div className="text-center mb-8">
+                    <h4 className="text-lg md:text-2xl font-black underline mb-1">{previewItem.title}</h4>
+                    <p className="text-[10px] md:text-xs text-gray-500">דף עבודה לימודי - חמשת החושים</p>
+                  </div>
+                  <div className="flex-1 flex items-center justify-center overflow-hidden">
+                    <img src={previewItem.imageUrl} alt={previewItem.title} className="max-w-full max-h-full object-contain filter grayscale contrast-125" />
+                  </div>
+                  <div className="mt-6 text-center text-[8px] md:text-[10px] text-gray-400 border-t border-dashed pt-2">
+                    (C) Noam Gold AI 2026 | מיועד לשימוש חינוכי בלבד
+                  </div>
                </div>
             </div>
 
-            <div className="md:w-2/5 p-8 md:p-12 flex flex-col justify-center text-right bg-white dark:bg-gray-950">
-               <div className="mb-10">
-                  <span className="inline-block px-4 py-1.5 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-black mb-6 uppercase tracking-widest">{previewItem.type}</span>
-                  <h2 className="text-4xl font-black text-gray-800 dark:text-white mb-6 leading-tight">{previewItem.title}</h2>
-                  <p className="text-xl text-gray-600 dark:text-gray-400 leading-relaxed font-medium">מוכנים להדפיס? דף העבודה כולל מקום לשם ותאריך, ומותאם בדיוק למדפסת שלכם.</p>
+            {/* Controls Side */}
+            <div className="lg:w-2/5 p-10 lg:p-16 flex flex-col justify-center text-right bg-white dark:bg-gray-950">
+               <div className="mb-12">
+                  <span className="inline-block px-5 py-2 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 rounded-full text-sm font-black mb-8 uppercase tracking-widest">{previewItem.type}</span>
+                  <h2 className="text-5xl font-black text-gray-800 dark:text-white mb-8 leading-tight">{previewItem.title}</h2>
+                  <p className="text-2xl text-gray-600 dark:text-gray-400 leading-relaxed font-medium">הדף מותאם להדפסה על דף A4 סטנדרטי. מומלץ להשתמש בצבעי עיפרון או טושים לאחר ההדפסה!</p>
                </div>
                
-               <div className="flex flex-col gap-4 mt-auto">
+               <div className="flex flex-col gap-5 mt-auto">
                  <button 
                    onClick={() => handlePrint(previewItem.imageUrl, previewItem.title)}
-                   className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-5 rounded-2xl flex items-center justify-center gap-3 transition-all shadow-xl active:scale-95 text-2xl"
+                   className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-6 rounded-3xl flex items-center justify-center gap-4 transition-all shadow-2xl active:scale-95 text-3xl"
                  >
-                   <span>🖨️</span> שלח להדפסה
+                   <span>🖨️</span> הדפס דף עבודה
                  </button>
                  <button 
                    onClick={() => setPreviewItem(null)}
-                   className="w-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-bold py-4 rounded-2xl hover:bg-gray-200 transition-all text-lg"
+                   className="w-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-bold py-5 rounded-3xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-all text-xl"
                  >
                    סגור תצוגה
                  </button>
